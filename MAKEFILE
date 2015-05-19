@@ -1,0 +1,32 @@
+# Indiquer quel compilateur est à utiliser
+CC      ?= gcc
+ 
+# Spécifier les options du compilateur
+CFLAGS  ?= -g -W -Wall -ansi -pedantic
+LDFLAGS ?=
+LDLIBS  ?= -lcrypto #-L. -liniparser
+SRC= $(wildcard */*.c)
+OBJ= $(SRC:.c=.o)
+PROG  = pkid
+
+@echo $(SRC)
+@echo $(OBJ)
+@echo $(PROG)
+@echo $(CFLAGS)
+
+all: $(PROG)
+
+# Reconnaître les extensions de nom de fichier *.c et *.o comme suffixe
+SUFFIXES ?= .c .o
+.SUFFIXES: $(SUFFIXES) .
+
+# Liste de fichiers objets nécessaires pour le programme final
+OBJS  = main.o rsa.o aes.o error.o certificat.o client.o file.o socket.o sha.o
+
+# Étape de compilation et d'éditions de liens
+# ATTENTION, les lignes suivantes contenant "$(CC)" commencent par un caractère TABULATION et non pas des espaces
+$(PROG): $(OBJS)
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+%.o: %.c
+	$(CC) -o $@ -c $< $(CFLAGS)
